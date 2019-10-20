@@ -2,20 +2,25 @@ from django.shortcuts import render, Http404, get_object_or_404, HttpResponseRed
 from .models import PostModel
 from .forms import PostModelForm
 from django.contrib import messages
+from django.db.models import Q
 
 # Create your views here
 
 
 def list_posts(request):
     if request.user.is_authenticated:
-        print("User is authenticated..")
-        print(request.user)
-    elif request.user.is_admin:
-        print("User is admin")
-    elif request.user.is_staff:
-        print("User is staff")
-
-    posts = PostModel.objects.all()
+        print(f"{request.user} is authenticated")
+    else:
+        print("Not authenticated")
+    search_title = request.GET.get("title")
+    if search_title:
+        posts = PostModel.objects.filter(
+            Q(title__icontains=search_title) |
+            Q(content__icontains=search_title) |
+            Q(slug__icontains=search_title)
+        )
+    else:
+        posts = PostModel.objects.all()
     context = {
         "posts": posts
     }
