@@ -1,0 +1,12 @@
+<html>
+
+{% for post in posts %}
+<p>
+    {{post.id}}
+</p>
+<p>
+    <a href='{% url "blog:read" id=post.id %}'>{{post.title}}</a>
+</p>
+{% endfor %}
+
+</html>
